@@ -1,0 +1,45 @@
+* SRAM
+
+.include cmos_90nm.txt
+m1  q  qbar  vdd  vdd pmos W=0.9u L=0.18u M=1
+m3 gnd  qbar  q gnd nmos W=0.36u L=0.18u M=1
+m5  vdd  q  qbar  vdd pmos W=0.9u L=0.18u M=1
+m4  qbar   q gnd gnd nmos W=0.36u L=0.18u M=1
+m6  blbar  wl  qbar gnd nmos W=0.36u L=0.18u M=1
+m2  q  wl  bl gnd nmos W=0.36u L=0.18u M=1
+* u1   blbar  qbar  q port
+v3   bl gnd pulse(0v 1.8v 10ns 50ns 20ns 40us 80us)
+m8  blbar  bl  vdd  vdd pmos W=0.9u L=0.18u M=1
+m7  blbar  bl gnd gnd nmos W=0.36u L=0.18u M=1
+v1   wl gnd pulse(1.8v 2.0v 5ns 50ns 3ns 10ns 80us)
+v2  vdd gnd  dc 1.8v
+.tran 10e-09 100e-09 3e-09
+
+.SUBCKT precharge
+m1 vcc  bl gnd vcc pmos W=0.9u L=0.18u M=1
+m2 vcc  bl gnd vcc pmos W=0.9u L=0.18u M=1
+* u1   bl port
+.ends
+
+.SUBCKT senseamp
+m2 net1_m1 net1_m1 vcc vcc CMOSP W=100u L=100u M=1
+m4 vcc net1_m1 net3_m4 vcc CMOSP W=100u L=100u M=1
+m7 vcc net3_m4 net1_m6 vcc CMOSP W=100u L=100u M=1
+m9 vcc net1_m6 net1_m8 vcc CMOSP W=100u L=100u M=1
+m8 net1_m8 net1_m6 gnd gnd CMOSN W=0.36u L=0.18u M=1
+m6 net1_m6 net3_m4 gnd gnd CMOSN W=100u L=100u M=1
+m5 net3_m1  blbar net3_m4 gnd CMOSN W=100u L=100u M=1
+m1 net1_m1  bl net3_m1 gnd CMOSN W=100u L=100u M=1
+m3 net3_m1 vcc gnd gnd CMOSN W=100u L=100u M=1
+* u1   bl  blbar net1_m8 port
+.IC V(1)=0
+.IC V(1)=0
+.ends
+
+* Control Statements
+.control
+run
+plot v(bl) v(blbar) v(q) v(qbar) v(wl)
+.endc
+.end
+
