@@ -63,6 +63,3 @@ Contributions to this repository are welcome! If you find any issues, want to en
 
 This project is licensed under the [MIT License](insert_license_url_here).
 
----
-
-For more information and details, please refer to the [Wiki](insert_wiki_url_here) section.
